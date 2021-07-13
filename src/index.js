@@ -3,23 +3,23 @@ import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import logger from 'morgan'
 
-import mainRoutes from './server/routes/main.js'
+import mainRoutes from './routes/index.js'
 
 const app = express()
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(logger('dev'));
 
+//** app use 
+app.use(bodyParser.json())
+//parse the request of content-type applicaion/x-wwww-form-urlencoded
+app.use(bodyParser.urlencoded({
+  extended: false
+}))
+app.use(logger('dev'))
 app.use('/', mainRoutes)
 
-// set up mongoose
-mongoose.connect('mongodb+srv://phong:123@cluster0.fxtkg.mongodb.net/[BE]_System_initialization?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Database connected');
-  })
-  .catch((error) => {
-    console.log('Error connecting to database');
-  });
+//* DB connect
+import db from './config/db/index.js'
+db.connect()
+
 const port = 3000
 // var morgan = require('morgan')
 
