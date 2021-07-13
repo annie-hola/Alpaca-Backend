@@ -58,7 +58,7 @@ export const getAllUser = (req, res) => {
 }
 
 // update user 
-export const UpdateUser = (req, res) => {
+export const updateUser = (req, res) => {
     const id = req.params.userId
     const updateObject = req.body
     User.update({
@@ -82,7 +82,27 @@ export const UpdateUser = (req, res) => {
             })
         })
 }
-
+// active User
+export const activeUser = (req, res) => {
+    const id = req.params.userId
+    // const updateObject = req.body.status
+    User.update({ _id: id }, { $set: { status: "active" } })
+        .exec()
+        .then(() => {
+            return res.status(200).json({
+                success: true,
+                message: 'User is updated',
+                // updateUser: updateObject
+            })
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error, please try again.',
+                error: err.message
+            })
+        })
+}
 // delete user 
 export const deleteUser = (req, res) => {
     const id = req.params.userId
@@ -92,6 +112,45 @@ export const deleteUser = (req, res) => {
             return res.status(200).json({
                 success: true,
                 message: 'User is deleted',
+            })
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error, please try again.',
+                error: err.message
+            })
+        })
+}
+
+// sort user by role 
+export const sortUserByRole = (req, res) => {
+    User.find().sort({ "role": 1 })
+        .select('_id fullName company country contact role currentPlan userName email password status avatar')
+        .then((allUser) => {
+            return res.status(200).json({
+                success: true,
+                message: 'list of user is got',
+                User: allUser
+            })
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error, please try again.',
+                error: err.message
+            })
+        })
+}
+//sort user by plan
+export const sortUserByPlan = (req, res) => {
+    User.find().sort({ "currentPlan": 1 })
+        .select('_id fullName company country contact role currentPlan userName email password status avatar')
+        .then((allUser) => {
+            return res.status(200).json({
+                success: true,
+                message: 'list of user is got',
+                User: allUser
             })
         })
         .catch((err) => {
