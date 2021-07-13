@@ -1,5 +1,11 @@
 import express from 'express'
-import { createNewUser, deleteUser, getAllUser, UpdateUser } from '../controllers/User.js';
+import {
+    createNewUser,
+    deleteUser,
+    getAllUser,
+    UpdateUser
+} from '../app/controllers/UserController.js';
+
 const router = express.Router();
 router.post('/createUser', createNewUser);
 router.get('/getUser', getAllUser);

@@ -61,7 +61,11 @@ export const getAllUser = (req, res) => {
 export const UpdateUser = (req, res) => {
     const id = req.params.userId
     const updateObject = req.body
-    User.update({ _id: id }, { $set: updateObject })
+    User.update({
+            _id: id
+        }, {
+            $set: updateObject
+        })
         .exec()
         .then(() => {
             return res.status(200).json({
