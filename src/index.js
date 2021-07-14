@@ -19,7 +19,7 @@ app.use('/', mainRoutes)
 import db from './config/db/index.js'
 db.connect()
 
-const port = 4040
+const port = 3000
 // var morgan = require('morgan')
 
 app.get('/', (req, res) => {
