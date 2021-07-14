@@ -1,12 +1,11 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import mongoose from 'mongoose'
 import logger from 'morgan'
-
+import dotenv from 'dotenv'
 import mainRoutes from './routes/index.js'
 
 const app = express()
-
+dotenv.config()
 //** app use 
 app.use(bodyParser.json())
 //parse the request of content-type applicaion/x-wwww-form-urlencoded
