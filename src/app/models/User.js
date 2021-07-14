@@ -1,11 +1,13 @@
 import mongoose from 'mongoose'
-mongoose.Promise = global.Promise
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 const userSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+    // _id: mongoose.Schema.Types.ObjectId,
     fullName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     company: {
         type: String,
@@ -30,15 +32,21 @@ const userSchema = new mongoose.Schema({
     },
     userName: {
         type: String,
-        required: true
+        required: true,
+        trim: true,
+        unique: true,
+        lowercase: true
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        lowercase: true,
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minLength: 7
     },
     status: {
         type: String,
@@ -47,6 +55,21 @@ const userSchema = new mongoose.Schema({
         type: String,
         // required: true
     },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
+})
+
+userSchema.pre('save', async function (next) {
+    // Hash the password before saving the user model
+    const user = this
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
+    next()
 })
 
 export default mongoose.model('User', userSchema)

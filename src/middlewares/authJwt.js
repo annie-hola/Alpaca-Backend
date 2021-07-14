@@ -1,20 +1,15 @@
-const jwt = require('jsonwebtoken')
-const util = require('../util/auth')
-const db = require('../config/db')
-const User = db.User
+import jwt from 'jsonwebtoken'
 
-vertifyToken = (req, res, next) => {
-    let token = req.header['x-access-token']
+// check valid token
+export default function (req, res, next) {
+    const token = req.header('auth-token');
+    if (!token) return res.status(401).send('Access denied. You are out');
 
-    // 403: Forbideen Error
-    if (!token) {
-        return res.status(403).send({
-            message: 'No token provided'
-        })
+    try {
+        const verified = jwt.verify(token, process.env.TOKEN_SECRET);
+        req.user = verified;
+        next();
+    } catch (err) {
+        res.status(400).send('Invalid token');
     }
-
-}
-
-module.exports = {
-    vertifyToken
 }
