@@ -4,7 +4,7 @@ import User from '../models/User.js'
 // create new User 
 export const createNewUser = (req, res) => {
     const user = new User({
-        _id: mongoose.Types.ObjectId(),
+        // _id: mongoose.Types.ObjectId(),
         fullName: req.body.fullName,
         company: req.body.company,
         country: req.body.country,
@@ -13,9 +13,9 @@ export const createNewUser = (req, res) => {
         currentPlan: req.body.currentPlan,
         userName: req.body.userName,
         email: req.body.email,
-        password: req.body.email,
+        password: "12345678",
         status: "pending",
-        avatar: ""
+        avatar: "",
     })
 
     return user
@@ -24,7 +24,7 @@ export const createNewUser = (req, res) => {
             return res.status(200).json({
                 success: true,
                 messgae: 'New user is created',
-                User: newUser
+                User: newUser,
             })
         })
         .catch((err) => {
@@ -62,10 +62,10 @@ export const updateUser = (req, res) => {
     const id = req.params.userId
     const updateObject = req.body
     User.update({
-            _id: id
-        }, {
-            $set: updateObject
-        })
+        _id: id
+    }, {
+        $set: updateObject
+    })
         .exec()
         .then(() => {
             return res.status(200).json({
@@ -85,14 +85,12 @@ export const updateUser = (req, res) => {
 // active User
 export const activeUser = (req, res) => {
     const id = req.params.userId
-    // const updateObject = req.body.status
     User.update({ _id: id }, { $set: { status: "active" } })
         .exec()
         .then(() => {
             return res.status(200).json({
                 success: true,
                 message: 'User is updated',
-                // updateUser: updateObject
             })
         })
         .catch((err) => {
