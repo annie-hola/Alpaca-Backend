@@ -1,6 +1,5 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import mongoose from 'mongoose'
 import logger from 'morgan'
 
 import mainRoutes from './routes/index.js'
@@ -20,7 +19,7 @@ app.use('/', mainRoutes)
 import db from './config/db/index.js'
 db.connect()
 
-const port = 3000
+const port = 4040
 // var morgan = require('morgan')
 
 app.get('/', (req, res) => {
