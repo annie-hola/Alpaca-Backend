@@ -13,7 +13,7 @@ export const createNewUser = (req, res) => {
         currentPlan: req.body.currentPlan,
         userName: req.body.userName,
         email: req.body.email,
-        password: "12345678",
+        password: req.body.password,
         status: "pending",
         avatar: "",
     })
