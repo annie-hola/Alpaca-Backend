@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import User from '../models/User.js'
 import bcrypt from 'bcrypt'
-
+import jwt from 'jsonwebtoken'
 // create new User 
 export const createNewUser = (req, res) => {
 
@@ -189,16 +189,20 @@ export const LogIn = async (req, res) => {
         const validPass = await bcrypt.compare(req.body.password, user.password);
         if (!validPass) return res.status(400).send('Invalid password');
 
-        const token = await user.generateAuthToken()
+        // create Token
+        const token = jwt.sign({
+            _id: user._id
+        }, process.env.JWT_KEY);
+        res.header('auth-token', token);
+
         res.send({
             user,
             token
         })
-        res.send('Log In')
 
     } catch (error) {
         console.log(error);
-        res.status(400).send('Something wrong')
+        res.status(400)
     }
 }
 
@@ -209,7 +213,6 @@ export const LogOut = async (req, res) => {
             return token.token != req.token
         })
         await req.user.save()
-        res.send('Log Out now')
     } catch (error) {
         console.log(error)
         res.status(500).send(error)

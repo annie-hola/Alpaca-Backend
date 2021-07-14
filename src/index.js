@@ -1,11 +1,11 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import logger from 'morgan'
-
+import dotenv from 'dotenv'
 import mainRoutes from './routes/index.js'
 
 const app = express()
-
+dotenv.config()
 //** app use 
 app.use(bodyParser.json())
 //parse the request of content-type applicaion/x-wwww-form-urlencoded
@@ -19,7 +19,7 @@ app.use('/', mainRoutes)
 import db from './config/db/index.js'
 db.connect()
 
-const port = 4040
+const port = 3000
 // var morgan = require('morgan')
 
 app.get('/', (req, res) => {
