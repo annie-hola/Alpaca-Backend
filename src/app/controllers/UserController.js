@@ -38,6 +38,7 @@ export const createNewUser = (req, res) => {
 }
 
 // get all user 
+
 export const getAllUser = (req, res) => {
     User.find()
         .select('_id fullName company country contact role currentPlan userName email password status avatar')
