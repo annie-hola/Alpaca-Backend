@@ -24,7 +24,7 @@ db.connect()
 //middleware
 app.use(express.json())
 
-const port = 5000
+const port = 3000
 // var morgan = require('morgan')
 
 app.get('/', (req, res) => {
