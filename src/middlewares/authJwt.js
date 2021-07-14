@@ -1,20 +1,20 @@
-const jwt = require('jsonwebtoken')
-const util = require('../util/auth')
-const db = require('../config/db')
-const User = db.User
+import jwt from 'jsonwebtoken'
 
-vertifyToken = (req, res, next) => {
-    let token = req.header['x-access-token']
+const requireAuth = (req, res, next) => {
+    const token = req.cookies.jwt;
 
-    // 403: Forbideen Error
-    if (!token) {
-        return res.status(403).send({
-            message: 'No token provided'
-        })
+    // check json web token exists & is verified
+    if (token) {
+        jwt.verify(token, 'net ninja secret', (err, decodedToken) => {
+            if (err) {
+                console.log(err.message);
+                res.redirect('/login');
+            } else {
+                console.log(decodedToken);
+                next();
+            }
+        });
+    } else {
+        res.redirect('/login');
     }
-
-}
-
-module.exports = {
-    vertifyToken
-}
+};

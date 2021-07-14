@@ -1,10 +1,9 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import mongoose from 'mongoose'
 import logger from 'morgan'
 
 import mainRoutes from './routes/index.js'
-
+import cookieParser from 'cookie-parser'
 const app = express()
 
 //** app use 
@@ -13,6 +12,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: false
 }))
+app.use(cookieParser());
+
 app.use(logger('dev'))
 app.use('/', mainRoutes)
 
@@ -20,7 +21,10 @@ app.use('/', mainRoutes)
 import db from './config/db/index.js'
 db.connect()
 
-const port = 3000
+//middleware
+app.use(express.json())
+
+const port = 5000
 // var morgan = require('morgan')
 
 app.get('/', (req, res) => {
@@ -28,5 +32,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Server listening at http://localhost:${port}`)
 })

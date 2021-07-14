@@ -13,7 +13,7 @@ export const createNewUser = (req, res) => {
         currentPlan: req.body.currentPlan,
         userName: req.body.userName,
         email: req.body.email,
-        password: req.body.email,
+        password: req.body.password,
         status: "pending",
         avatar: ""
     })
@@ -23,7 +23,7 @@ export const createNewUser = (req, res) => {
         .then((newUser) => {
             return res.status(200).json({
                 success: true,
-                messgae: 'New user is created',
+                message: 'New user is created',
                 User: newUser
             })
         })
@@ -31,7 +31,7 @@ export const createNewUser = (req, res) => {
             console.log(err);
             return res.status(500).json({
                 success: false,
-                messgae: 'Server error, please try again.',
+                message: 'Server error, please try again.',
                 error: err.messgae
             })
         })
@@ -86,7 +86,13 @@ export const updateUser = (req, res) => {
 export const activeUser = (req, res) => {
     const id = req.params.userId
     // const updateObject = req.body.status
-    User.update({ _id: id }, { $set: { status: "active" } })
+    User.update({
+            _id: id
+        }, {
+            $set: {
+                status: "active"
+            }
+        })
         .exec()
         .then(() => {
             return res.status(200).json({
@@ -125,7 +131,9 @@ export const deleteUser = (req, res) => {
 
 // sort user by role 
 export const sortUserByRole = (req, res) => {
-    User.find().sort({ "role": 1 })
+    User.find().sort({
+            "role": 1
+        })
         .select('_id fullName company country contact role currentPlan userName email password status avatar')
         .then((allUser) => {
             return res.status(200).json({
@@ -142,9 +150,12 @@ export const sortUserByRole = (req, res) => {
             })
         })
 }
+
 //sort user by plan
 export const sortUserByPlan = (req, res) => {
-    User.find().sort({ "currentPlan": 1 })
+    User.find().sort({
+            "currentPlan": 1
+        })
         .select('_id fullName company country contact role currentPlan userName email password status avatar')
         .then((allUser) => {
             return res.status(200).json({

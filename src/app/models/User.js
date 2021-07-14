@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 mongoose.Promise = global.Promise
+import bcrypt from 'bcrypt'
 
 const userSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -48,5 +49,6 @@ const userSchema = new mongoose.Schema({
         // required: true
     },
 })
+
 
 export default mongoose.model('User', userSchema)
