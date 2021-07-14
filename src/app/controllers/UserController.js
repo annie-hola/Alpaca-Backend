@@ -1,8 +1,10 @@
 import mongoose from 'mongoose'
 import User from '../models/User.js'
-
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 // create new User 
 export const createNewUser = (req, res) => {
+
     const user = new User({
         // _id: mongoose.Types.ObjectId(),
         fullName: req.body.fullName,
@@ -19,6 +21,7 @@ export const createNewUser = (req, res) => {
     })
 
     return user
+
         .save()
         .then((newUser) => {
             return res.status(200).json({
@@ -63,10 +66,10 @@ export const updateUser = (req, res) => {
     const id = req.params.userId
     const updateObject = req.body
     User.update({
-        _id: id
-    }, {
-        $set: updateObject
-    })
+            _id: id
+        }, {
+            $set: updateObject
+        })
         .exec()
         .then(() => {
             return res.status(200).json({
@@ -86,7 +89,13 @@ export const updateUser = (req, res) => {
 // active User
 export const activeUser = (req, res) => {
     const id = req.params.userId
-    User.update({ _id: id }, { $set: { status: "active" } })
+    User.update({
+            _id: id
+        }, {
+            $set: {
+                status: "active"
+            }
+        })
         .exec()
         .then(() => {
             return res.status(200).json({
@@ -124,7 +133,9 @@ export const deleteUser = (req, res) => {
 
 // sort user by role 
 export const sortUserByRole = (req, res) => {
-    User.find().sort({ "role": 1 })
+    User.find().sort({
+            "role": 1
+        })
         .select('_id fullName company country contact role currentPlan userName email password status avatar')
         .then((allUser) => {
             return res.status(200).json({
@@ -143,7 +154,9 @@ export const sortUserByRole = (req, res) => {
 }
 //sort user by plan
 export const sortUserByPlan = (req, res) => {
-    User.find().sort({ "currentPlan": 1 })
+    User.find().sort({
+            "currentPlan": 1
+        })
         .select('_id fullName company country contact role currentPlan userName email password status avatar')
         .then((allUser) => {
             return res.status(200).json({
@@ -159,4 +172,55 @@ export const sortUserByPlan = (req, res) => {
                 error: err.message
             })
         })
+}
+
+export const LogIn = async (req, res) => {
+    //Login a active user
+    try {
+        // check email
+        const user = await User.findOne({
+            email: req.body.email
+        })
+        if (!user) {
+            return res.status(401).send({
+                error: 'No credentials'
+            })
+        }
+        //check password
+        const validPass = await bcrypt.compare(req.body.password, user.password);
+        if (!validPass) return res.status(400).send('Invalid password');
+
+        // create Token
+        const token = jwt.sign({
+            _id: user._id
+        }, process.env.JWT_KEY);
+        res.header('auth-token', token);
+
+        res.send({
+            user,
+            token
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.status(400)
+    }
+}
+
+//Log Out
+export const LogOut = async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token != req.token
+        })
+        await req.user.save()
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error)
+    }
+}
+
+// View logged in user profile
+export const View = async (req, res) => {
+    res.send(req.user)
 }

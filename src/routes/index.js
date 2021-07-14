@@ -1,5 +1,18 @@
 import express from 'express'
-import { createNewUser, deleteUser, getAllUser, updateUser, activeUser, sortUserByRole, sortUserByPlan } from '../app/controllers/UserController.js';
+import {
+    createNewUser,
+    deleteUser,
+    getAllUser,
+    updateUser,
+    activeUser,
+    sortUserByRole,
+    sortUserByPlan,
+    LogIn,
+    LogOut,
+} from '../app/controllers/UserController.js';
+// Middleware
+import Authen from '../middlewares/authJwt.js';
+
 const router = express.Router();
 router.post('/users', createNewUser);
 router.get('/getUsers', getAllUser);
@@ -8,6 +21,7 @@ router.delete('/deleteUser/:userId', deleteUser);
 router.patch('/activeUser/:userId', activeUser);
 router.post('/sortRole', sortUserByRole);
 router.post('/sortPlan', sortUserByPlan);
-
+router.post('/logIn', LogIn);
+router.post('/logOut', Authen, LogOut);
 
 export default router;
