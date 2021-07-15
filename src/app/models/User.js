@@ -72,8 +72,6 @@ userSchema.pre('save', async function (next) {
     next()
 })
 
-<<<<<<< HEAD
-=======
 userSchema.methods.generateAuthToken = async function () {
     // Generate an auth token for the user
     const user = this
@@ -87,5 +85,4 @@ userSchema.methods.generateAuthToken = async function () {
     return token
 }
 
->>>>>>> f8d16f16e68c9c3b7842d360fd95e278e9acbdf6
 export default mongoose.model('User', userSchema)
