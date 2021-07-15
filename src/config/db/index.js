@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 async function connect() {
 
     try {
-        await mongoose.connect('mongodb+srv://phong:123@cluster0.fxtkg.mongodb.net/[BE]_System_initialization?retryWrites=true&w=majority', {
+        await mongoose.connect('mongodb+srv://phong:123@cluster0.fxtkg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useFindAndModify: false,
