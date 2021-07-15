@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import User from '../models/User.js'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 // create new User 
 export const createNewUser = (req, res) => {
@@ -66,10 +66,10 @@ export const updateUser = (req, res) => {
     const id = req.params.userId
     const updateObject = req.body
     User.update({
-            _id: id
-        }, {
-            $set: updateObject
-        })
+        _id: id
+    }, {
+        $set: updateObject
+    })
         .exec()
         .then(() => {
             return res.status(200).json({
@@ -90,17 +90,17 @@ export const updateUser = (req, res) => {
 export const activeUser = (req, res) => {
     const id = req.params.userId
     User.update({
-            _id: id
-        }, {
-            $set: {
-                status: "active"
-            }
-        })
+        _id: id
+    }, {
+        $set: {
+            status: "active"
+        }
+    })
         .exec()
         .then(() => {
             return res.status(200).json({
                 success: true,
-                message: 'User is updated',
+                message: 'User is active',
             })
         })
         .catch((err) => {
@@ -134,8 +134,8 @@ export const deleteUser = (req, res) => {
 // sort user by role 
 export const sortUserByRole = (req, res) => {
     User.find().sort({
-            "role": 1
-        })
+        "role": 1
+    })
         .select('_id fullName company country contact role currentPlan userName email password status avatar')
         .then((allUser) => {
             return res.status(200).json({
@@ -155,8 +155,8 @@ export const sortUserByRole = (req, res) => {
 //sort user by plan
 export const sortUserByPlan = (req, res) => {
     User.find().sort({
-            "currentPlan": 1
-        })
+        "currentPlan": 1
+    })
         .select('_id fullName company country contact role currentPlan userName email password status avatar')
         .then((allUser) => {
             return res.status(200).json({
@@ -182,29 +182,32 @@ export const LogIn = async (req, res) => {
             email: req.body.email
         })
         if (!user) {
+            console.log(user)
             return res.status(401).send({
                 error: 'No credentials'
             })
-        }
+        } else if (user.status === "pending") {
+            console.log(user.status)
+            return res.status(401).send({
+                error: 'User is pending'
+            })
+        } else if (user.status === "active") { }
         //check password
         const validPass = await bcrypt.compare(req.body.password, user.password);
         if (!validPass) return res.status(400).send('Invalid password');
 
-        // create Token
-        const token = jwt.sign({
-            _id: user._id
-        }, process.env.JWT_KEY);
-        res.header('auth-token', token);
-
+        const token = await user.generateAuthToken()
         res.send({
             user,
             token
         })
+        res.send('Log In')
 
     } catch (error) {
         console.log(error);
-        res.status(400)
+        res.status(400).send('Something wrong')
     }
+
 }
 
 //Log Out
